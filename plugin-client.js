@@ -1545,8 +1545,10 @@ function guardPasses(draft, input) {
 
 function EnhanceButton(props) {
   const t = makeT(props);
-  const sessionId = props.session && props.session.sessionId;
-  const input = props.input || {};
+  // v3.3.x-fork（新核心适配）：旧核心传 props.session.sessionId / props.input；
+  // 新核心（0.1.2-alpha.4）槽位改为标准 props：props.sessionId + useInput hook + props.inputActions。
+  const sessionId = props.sessionId !== undefined ? props.sessionId : (props.session && props.session.sessionId);
+  const input = (typeof props.useInput === 'function' ? props.useInput(s => s) : undefined) || props.input || {};
   const draft = typeof input.draft === 'string' ? input.draft : '';
   const inputActions = props.inputActions;
   // v3.3.x-fix：effect 内安全使用最新 actions——此前回注分支引用了未声明的
@@ -1785,8 +1787,9 @@ function EnhanceButton(props) {
 
 function EnhanceBar(props) {
   const t = makeT(props);
-  const sessionId = props.session && props.session.sessionId;
-  const input = props.input || {};
+  // v3.3.x-fork（新核心适配）：props.sessionId + useInput + inputActions 标准 props
+  const sessionId = props.sessionId !== undefined ? props.sessionId : (props.session && props.session.sessionId);
+  const input = (typeof props.useInput === 'function' ? props.useInput(s => s) : undefined) || props.input || {};
   const draft = typeof input.draft === 'string' ? input.draft : '';
   const inputActions = props.inputActions;
 
@@ -4320,8 +4323,9 @@ const labelEl = seconds > 0 ? React.createElement('span', { className: 'dsh-vi-l
 
 function VoiceMicButton(props) {
   const t = makeT(props);
-  const sessionId = props.session && props.session.sessionId;
-  const input = props.input || {};
+  // v3.3.x-fork（新核心适配）：props.sessionId + useInput + inputActions 标准 props
+  const sessionId = props.sessionId !== undefined ? props.sessionId : (props.session && props.session.sessionId);
+  const input = (typeof props.useInput === 'function' ? props.useInput(s => s) : undefined) || props.input || {};
   const draft = typeof input.draft === 'string' ? input.draft : '';
   const inputActions = props.inputActions;
   const [status, setStatus] = React.useState('idle');
